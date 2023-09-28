@@ -1,0 +1,16 @@
+--create table users (
+--    username varchar(100) not null primary key,
+--    password varchar(159) not null,
+--    enable boolean not null
+--);
+
+--create table authorities (
+--    username varchar(100) not null references users(username);
+--    authority varchar(200) not null
+--);
+--
+--insert into users(username, password, enable)
+--    values('user', '{noop}user', true);
+--
+--insert into authorities(username, authority)
+--    values('user', 'ROLE_USER');

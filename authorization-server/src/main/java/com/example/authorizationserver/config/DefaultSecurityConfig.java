@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,8 +16,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.springframework.security.core.GrantedAuthority;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -37,12 +36,17 @@ public class DefaultSecurityConfig {
 
     @Bean
     UserDetailsService users() {
-        UserDetails user = User.withDefaultPasswordEncoder()
+        UserDetails user1 = User.withDefaultPasswordEncoder()
                 .username("admin")
+                .password("password")
+                .roles("ADMIN")
+                .build();
+        UserDetails user2 = User.withDefaultPasswordEncoder()
+                .username("user")
                 .password("password")
                 .roles("USER")
                 .build();
-        return new InMemoryUserDetailsManager(user);
+        return new InMemoryUserDetailsManager(user1, user2);
     }
 
     @Bean
