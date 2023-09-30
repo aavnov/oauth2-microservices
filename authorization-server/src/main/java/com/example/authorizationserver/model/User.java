@@ -10,10 +10,10 @@ import java.util.Set;
 
 @Entity
 //@Table(name = "users")
-//@AllArgsConstructor
-//@NoArgsConstructor
-//@Getter
-//@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,8 +25,8 @@ public class User {
     @Column(nullable = false)
     String password;
 
-//    @ManyToMany(fetch = FetchType.EAGER)
-//    private Set<Role> roles = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Role> roles = new HashSet<>();
 
     Boolean enabled;
 
