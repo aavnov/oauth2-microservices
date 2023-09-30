@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
@@ -40,6 +42,7 @@ public class DefaultSecurityConfig {
         return http.build();
     }
 
+// #1 InMemoryUserDetailsManager
 //    @Bean
 //    UserDetailsService users() {
 //        UserDetails user1 = User.withDefaultPasswordEncoder()
@@ -55,23 +58,36 @@ public class DefaultSecurityConfig {
 //        return new InMemoryUserDetailsManager(user1, user2);
 //    }
 
+// #2 JdbcUserDetailsManager, JdbcDaoImpl.DEFAULT_USER_SCHEMA_DDL_LOCATION
+//    @Bean
+//    UserDetailsManager users(DataSource dataSource) {
+//        UserDetails user = User.withDefaultPasswordEncoder()
+//                .username("user")
+//                .password("password")
+//                .roles("USER")
+//                .build();
+//        UserDetails admin = User.withDefaultPasswordEncoder()
+//                .username("admin")
+//                .password("password")
+//                .roles("ADMIN")
+//                .build();
+//        JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
+//        users.createUser(user);
+//        users.createUser(admin);
+//        return users;
+//    }
+
+// # 3 db + default schema, my datasource
     @Bean
-    UserDetailsManager users(DataSource dataSource) {
-        UserDetails user = User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("password")
-                .roles("USER")
-                .build();
-        UserDetails admin = User.withDefaultPasswordEncoder()
-                .username("admin")
-                .password("password")
-                .roles("ADMIN")
-                .build();
-        JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
-        users.createUser(user);
-        users.createUser(admin);
-        return users;
+    UserDetailsService userDetailsService(DataSource dataSource) {
+        return new JdbcUserDetailsManager(dataSource);
     }
+
+// # 4
+
+
+
+
 
     @Bean
     OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
@@ -87,13 +103,19 @@ public class DefaultSecurityConfig {
     }
 
 
-    @Bean
-    DataSource dataSource() {
-        return new EmbeddedDatabaseBuilder()
-                .setType(H2)
-                .addScript(JdbcDaoImpl.DEFAULT_USER_SCHEMA_DDL_LOCATION)
-                .build();
-    }
+// 2
+//    @Bean
+//    DataSource dataSource() {
+//        return new EmbeddedDatabaseBuilder()
+//                .setType(H2)
+//                .addScript(JdbcDaoImpl.DEFAULT_USER_SCHEMA_DDL_LOCATION)
+//                .build();
+//    }
+
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 
 
 }
