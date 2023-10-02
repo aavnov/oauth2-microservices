@@ -10,12 +10,12 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "roles1")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Role implements Serializable {
+public class Role1 implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

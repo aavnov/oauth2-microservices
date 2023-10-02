@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS authorities;
+DROP TABLE IF EXISTS roles;
 
 --CREATE TABLE users
 --(
@@ -18,13 +19,23 @@ DROP TABLE IF EXISTS authorities;
 --);
 
 -- //////////////////////////////////////
-CREATE TABLE users (
-    username VARCHAR(100) NOT NULL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS users (
+    id LONG NOT NULL AUTO_INCREMENT,
+    username VARCHAR(100) NOT NULL,
     password VARCHAR(159) NOT NULL,
-    enabled boolean NOT NULL
+    enabled boolean NOT NULL,
+    PRIMARY KEY (id)
+);
+
+
+CREATE TABLE IF NOT EXISTS roles (
+    id LONG NOT NULL,
+    role VARCHAR(200) DEFAULT NULL,
+    FOREIGN KEY (id) REFERENCES users (id)
 );
 
 CREATE TABLE authorities (
+id LONG NOT NULL AUTO_INCREMENT,
     username VARCHAR(100) NOT NULL REFERENCES users(username),
     authority VARCHAR(200) NOT NULL
 );

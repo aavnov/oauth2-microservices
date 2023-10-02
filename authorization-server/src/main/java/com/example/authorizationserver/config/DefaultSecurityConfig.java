@@ -1,30 +1,30 @@
 package com.example.authorizationserver.config;
 
+import com.example.authorizationserver.repository.UserRepository;
+import com.example.authorizationserver.service.UserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 import javax.sql.DataSource;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.H2;
+import static javax.management.Query.and;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @EnableWebSecurity
@@ -32,13 +32,17 @@ public class DefaultSecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+        System.out.println("filter");
         http
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests
                                 .anyRequest()
                                 .authenticated()
+                                .and()
+                                .authenticationProvider(authenticationProvider())
                 )
                 .formLogin(withDefaults());
+
         return http.build();
     }
 
@@ -78,12 +82,15 @@ public class DefaultSecurityConfig {
 //    }
 
 // # 3 db + default schema, my datasource
-    @Bean
-    UserDetailsService userDetailsService(DataSource dataSource) {
-        return new JdbcUserDetailsManager(dataSource);
-    }
+//    @Bean
+//    UserDetailsService userDetailsService(DataSource dataSource) {
+//        return new JdbcUserDetailsManager(dataSource);
+//    }
 
 // # 4
+//  package com.example.authorizationserver.service;
+//  UserDetailsServiceImpl
+
 
 
 
@@ -114,9 +121,29 @@ public class DefaultSecurityConfig {
 //    }
 
 //    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
+//    public static PasswordEncoder passwordEncoder() {
+//        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+//        System.out.println("!!!!!!!!!!!!!!!!!!!");
+//        System.out.println(encoder.encode("password"));
+//        return encoder;
 //    }
+
+
+    private final UserDetailsServiceImpl userDetailsService;
+
+    @Autowired
+    public DefaultSecurityConfig(UserDetailsServiceImpl userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        System.out.println("provider");
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+     //   authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
+    }
 
 
 }

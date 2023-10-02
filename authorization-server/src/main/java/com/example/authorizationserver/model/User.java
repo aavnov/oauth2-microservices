@@ -6,10 +6,11 @@ import lombok.*;
 
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
-//@Table(name = "users")
+@Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -25,8 +26,13 @@ public class User {
     @Column(nullable = false)
     String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles = new HashSet<>();
+    @ElementCollection(fetch= FetchType.EAGER)
+    @CollectionTable(
+            name="roles",
+            joinColumns = @JoinColumn(name = "id")
+    )
+    @Column(name="role")
+    private List<String> roles;
 
     Boolean enabled;
 
