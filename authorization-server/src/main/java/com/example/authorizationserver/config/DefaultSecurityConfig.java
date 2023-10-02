@@ -80,6 +80,16 @@ public class DefaultSecurityConfig {
 //        users.createUser(admin);
 //        return users;
 //    }
+// # 2
+//    @Bean
+//    DataSource dataSource() {
+//        return new EmbeddedDatabaseBuilder()
+//                .setType(H2)
+//                .addScript(JdbcDaoImpl.DEFAULT_USER_SCHEMA_DDL_LOCATION)
+//                .build();
+//    }
+
+
 
 // # 3 db + default schema, my datasource
 //    @Bean
@@ -87,14 +97,11 @@ public class DefaultSecurityConfig {
 //        return new JdbcUserDetailsManager(dataSource);
 //    }
 
+
+
 // # 4
 //  package com.example.authorizationserver.service;
 //  UserDetailsServiceImpl
-
-
-
-
-
 
     @Bean
     OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
@@ -109,17 +116,6 @@ public class DefaultSecurityConfig {
         };
     }
 
-
-
-// 2
-//    @Bean
-//    DataSource dataSource() {
-//        return new EmbeddedDatabaseBuilder()
-//                .setType(H2)
-//                .addScript(JdbcDaoImpl.DEFAULT_USER_SCHEMA_DDL_LOCATION)
-//                .build();
-//    }
-
 //    @Bean
 //    public static PasswordEncoder passwordEncoder() {
 //        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -127,7 +123,6 @@ public class DefaultSecurityConfig {
 //        System.out.println(encoder.encode("password"));
 //        return encoder;
 //    }
-
 
     private final UserDetailsServiceImpl userDetailsService;
 
